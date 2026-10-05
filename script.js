@@ -51,3 +51,34 @@ const typed = new Typed('.multiple-text', {
   backDelay:1000,
   loop:true
 });
+
+
+// Skills: fill bars and count up when the section scrolls into view
+const skillsSection = document.querySelector('.skills');
+const skillItems = document.querySelectorAll('.skill');
+let skillsAnimated = false;
+
+function animateSkills() {
+  skillItems.forEach(item => {
+    const fill = item.querySelector('.skill-fill');
+    const label = item.querySelector('.skill-percent');
+    const target = parseInt(fill.dataset.percent, 10);
+
+    fill.style.width = target + '%';
+
+    let current = 0;
+    const timer = setInterval(() => {
+      current++;
+      label.textContent = current + '%';
+      if (current >= target) clearInterval(timer);
+    }, 1600 / target);
+  });
+}
+
+new IntersectionObserver((entries, observer) => {
+  if (entries[0].isIntersecting && !skillsAnimated) {
+    skillsAnimated = true;
+    animateSkills();
+    observer.disconnect();
+  }
+}, { threshold: 0.3 }).observe(skillsSection);
